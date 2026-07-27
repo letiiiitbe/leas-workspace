@@ -1,15 +1,16 @@
 // Lea's Workspace Service Worker
-const CACHE_NAME = 'leas-ws-v1';
+const CACHE_NAME = 'leas-ws-v2';
+const BASE = '/leas-workspace/';
 const ASSETS = [
-  './',
-  './index.html',
-  './app.js',
-  './styles.css',
-  './manifest.json',
-  './favicon.ico',
-  './icons/icon-192.png',
-  './icons/icon-512.png',
-  './icons/apple-touch-icon.png'
+  BASE,
+  BASE + 'index.html',
+  BASE + 'app.js',
+  BASE + 'styles.css',
+  BASE + 'manifest.json',
+  BASE + 'favicon.ico',
+  BASE + 'icons/icon-192.png',
+  BASE + 'icons/icon-512.png',
+  BASE + 'icons/apple-touch-icon.png'
 ];
 
 self.addEventListener('install', e => {
@@ -28,12 +29,12 @@ self.addEventListener('activate', e => {
 self.addEventListener('fetch', e => {
   const req = e.request;
   if (req.method !== 'GET') return;
-  // 网络优先（动态数据），失败回退缓存
+  // 只处理同源 GET 请求
   e.respondWith(
     fetch(req).then(res => {
       const copy = res.clone();
       caches.open(CACHE_NAME).then(c => c.put(req, copy)).catch(()=>{});
       return res;
-    }).catch(() => caches.match(req).then(r => r || caches.match('./index.html')))
+    }).catch(() => caches.match(req).then(r => r || caches.match(BASE + 'index.html')))
   );
 });

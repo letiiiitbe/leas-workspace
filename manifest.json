@@ -2,8 +2,8 @@
   "name": "Lea's Workspace",
   "short_name": "Lea's WS",
   "description": "Lea 的个人生活工作成长工作台",
-  "start_url": "./index.html",
-  "scope": "./",
+  "start_url": "/leas-workspace/",
+  "scope": "/leas-workspace/",
   "display": "standalone",
   "orientation": "portrait",
   "background_color": "#F2F2F7",
@@ -19,9 +19,9 @@
     { "src": "icons/maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
   ],
   "shortcuts": [
-    { "name": "每日计划", "url": "./index.html#daily" },
-    { "name": "每月计划", "url": "./index.html#monthly" },
-    { "name": "知识库", "url": "./index.html#knowledge" },
-    { "name": "每日播客", "url": "./index.html#podcast" }
+    { "name": "每日计划", "url": "/leas-workspace/#daily" },
+    { "name": "每月计划", "url": "/leas-workspace/#monthly" },
+    { "name": "知识库", "url": "/leas-workspace/#knowledge" },
+    { "name": "每日播客", "url": "/leas-workspace/#podcast" }
   ]
 }
