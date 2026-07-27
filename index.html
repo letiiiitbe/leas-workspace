@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Lea's WS">
+<meta name="theme-color" content="#007AFF">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="icon" href="favicon.ico">
+<title>Lea's Workspace</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body class="bg-1">
+<div class="app">
+  <!-- 侧边导航 -->
+  <nav class="nav" id="nav">
+    <div class="nav-logo">L</div>
+    <div id="navItems"></div>
+    <button class="nav-add" onclick="openAddMenu()">+</button>
+  </nav>
+
+  <!-- 主内容 -->
+  <main class="main" id="main">
+    <!-- 每日计划 -->
+    <section class="page active" id="page-daily">
+      <div class="page-title">每日计划</div>
+      <div class="page-sub" id="todayDate"></div>
+      <div class="card card-pad">
+        <div class="progress-wrap">
+          <div class="ring" id="dailyRing"></div>
+          <div>
+            <div style="font-size:13px;color:var(--text-2)">今日完成进度</div>
+            <div id="dailyStat" style="font-size:20px;font-weight:700;margin-top:2px">0 / 0</div>
+            <div id="streakInfo" style="font-size:12px;color:var(--green);margin-top:2px">连续打卡 0 天</div>
+          </div>
+        </div>
+      </div>
+      <div class="section-title">任务清单</div>
+      <div class="input-bar">
+        <input id="taskInput" placeholder="新增任务…" onkeydown="if(event.key==='Enter')addTask()">
+        <button class="btn" onclick="addTask()">添加</button>
+      </div>
+      <div class="card" id="taskList"></div>
+      <div class="section-title">本周打卡</div>
+      <div class="card card-pad" id="weekGrid"></div>
+    </section>
+
+    <!-- 每月计划 -->
+    <section class="page" id="page-monthly">
+      <div class="page-title">每月计划</div>
+      <div class="page-sub">记录过去轨迹 · 规划未来要事</div>
+      <div class="cal-head">
+        <button class="cal-nav" onclick="changeMonth(-1)">‹</button>
+        <div class="m" id="calMonth"></div>
+        <button class="cal-nav" onclick="changeMonth(1)">›</button>
+      </div>
+      <div class="cal-grid" id="calGrid"></div>
+      <div class="cal-legend">
+        <span><span class="dot" style="background:var(--green)"></span>过去事件</span>
+        <span><span class="dot" style="background:var(--orange)"></span>未来待办</span>
+        <span><span class="dot" style="background:var(--blue)"></span>今天</span>
+      </div>
+      <div class="section-title" id="eventListTitle">事件记录</div>
+      <div class="input-bar">
+        <input id="eventInput" placeholder="点击日期后添加事件…" onkeydown="if(event.key==='Enter')addEvent()">
+        <select id="eventDateSel" style="background:var(--bg);border:none;border-radius:10px;padding:0 8px"></select>
+        <button class="btn" onclick="addEvent()">添加</button>
+      </div>
+      <div class="card" id="eventList"></div>
+    </section>
+
+    <!-- 知识库 -->
+    <section class="page" id="page-knowledge">
+      <div class="page-title">知识库</div>
+      <div class="page-sub">碎片信息智能收集 · 复习复盘</div>
+      <div class="input-bar">
+        <button class="mic-btn" id="micBtn" onclick="toggleVoice()">🎙</button>
+        <input id="kbInput" placeholder="一句话/金句/干货… 直接录入" onkeydown="if(event.key==='Enter')addKnowledge()">
+        <button class="btn" onclick="addKnowledge()">收纳</button>
+      </div>
+      <div class="kb-tabs" id="kbTabs"></div>
+      <div id="kbList"></div>
+    </section>
+
+    <!-- 复习中心 -->
+    <section class="page" id="page-review">
+      <div class="page-title">复习中心</div>
+      <div class="page-sub">主动回忆 · 巩固记忆</div>
+      <div class="card card-pad">
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <button class="btn ghost sm" onclick="startReview('random')">随机抽查</button>
+          <button class="btn ghost sm" onclick="startReview('source')">按来源分类</button>
+          <button class="btn ghost sm" onclick="startReview('keyword')">按关键词复习</button>
+          <button class="btn ghost sm" onclick="showWeeklyReview()">本周复盘</button>
+        </div>
+      </div>
+      <div class="section-title">复习卡片</div>
+      <div id="reviewArea">
+        <div class="empty-state"><div class="ic">📚</div>选择上方模式开始复习</div>
+      </div>
+      <div class="section-title">高频复习收藏夹</div>
+      <div id="favList"></div>
+      <div class="section-title">本周新增</div>
+      <div id="weekList"></div>
+    </section>
+
+    <!-- 每日播客 -->
+    <section class="page" id="page-podcast">
+      <div class="page-title">每日播客</div>
+      <div class="page-sub">小宇宙精选 · 灵感补给站</div>
+      <div class="kb-tabs" id="podTabs"></div>
+      <div id="podList"></div>
+    </section>
+
+    <!-- 设置 -->
+    <section class="page" id="page-settings">
+      <div class="page-title">设置</div>
+      <div class="page-sub">个性化你的工作台</div>
+      <div class="section-title">背景主题</div>
+      <div class="bg-picker" id="bgPicker"></div>
+      <div class="section-title">自定义导航菜单</div>
+      <div class="card" id="navCustom"></div>
+      <div class="section-title">数据管理</div>
+      <div class="card">
+        <div class="set-row"><span class="lbl">云端同步</span><span class="val" style="color:var(--green)">已开启</span></div>
+        <div class="set-row" onclick="exportData()" style="cursor:pointer"><span class="lbl">导出全部数据</span><span class="val">›</span></div>
+        <div class="set-row" onclick="exportReview()" style="cursor:pointer"><span class="lbl">导出复习清单（离线）</span><span class="val">›</span></div>
+        <div class="set-row" onclick="clearAll()" style="cursor:pointer"><span class="lbl" style="color:var(--red)">清空所有数据</span><span class="val">›</span></div>
+      </div>
+      <div class="section-title">关于</div>
+      <div class="card card-pad" style="text-align:center;font-size:13px;color:var(--text-2)">
+        <div style="font-weight:700;color:var(--text);font-size:15px;margin-bottom:4px">Lea's Workspace</div>
+        <div>个人生活工作成长工作台 · v1.0</div>
+        <div style="margin-top:6px">数据云端保存 · PWA 离线可用</div>
+      </div>
+    </section>
+  </main>
+</div>
+
+<!-- 弹层 -->
+<div class="sheet-mask" id="sheetMask" onclick="if(event.target===this)closeSheet()">
+  <div class="sheet" id="sheetContent"></div>
+</div>
+
+<!-- 知识详情 -->
+<div class="sheet-mask" id="kbSheetMask" onclick="if(event.target===this)closeKbSheet()">
+  <div class="sheet" id="kbSheet"></div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="app.js"></script>
+</body>
+</html>
